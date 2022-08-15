@@ -80,7 +80,6 @@ public class CompareHistograms extends JFrame {
         compareButton.setEnabled(false);
         compareButton.addActionListener(evt -> {
             int[] indexes = list.getSelectedIndices();
-            System.out.println("indexes " + Arrays.toString(indexes));
             showHistoCompareWindow(indexes[0], indexes[1]);
         });
         setVisible(true);
@@ -141,9 +140,9 @@ public class CompareHistograms extends JFrame {
     }
 
     private void readHistogram(String filename) throws Exception {
-        Histogram histogram = Histogram.readHistogramFile(filename);
         int index = histograms.size() + 1;
-        histogram.setName(index + ". " + filename);
+        String name = index + ". " + filename;
+        Histogram histogram = new Histogram(filename, name);
         histograms.addElement(histogram);
     }
 
@@ -232,14 +231,14 @@ public class CompareHistograms extends JFrame {
             HistoEntry entry1 = (HistoEntry) o;
             if (histo2.containsKey(entry1.getClassName())) {
                 Vector rowdata = new Vector();
-                rowdata.add(entry1.getClassName());
-
                 HistoEntry entry2 = histo2.get(entry1.getClassName());
                 long diff_size = entry2.getSize() - entry1.getSize();
-                rowdata.add(diff_size);
-
                 long diff_count = entry2.getCount() - entry1.getCount();
+
+                rowdata.add(diff_size);
                 rowdata.add(diff_count);
+                rowdata.add(entry1.getClassName());
+
                 rows.add(rowdata);
 
                 HistoEntry entry_diff = new HistoEntry(diff_size, diff_count, entry1.getClassName());
